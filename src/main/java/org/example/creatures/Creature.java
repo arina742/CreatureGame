@@ -1,10 +1,10 @@
 package org.example.creatures;
 
 public class Creature {
-    private byte attack;
-    private int health;
-    private int damage;
-    private byte protection;
+    protected byte attack;
+    protected int health;
+    protected int damage;
+    protected byte protection;
     public Creature(int health) {
         this.health = health;
     }

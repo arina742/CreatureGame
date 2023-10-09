@@ -2,6 +2,10 @@ package org.example;
 import org.example.creatures.Creature;
 import org.example.creatures.Monster;
 import org.example.creatures.Player;
+import org.example.servises.ImplInput;
+import org.example.servises.ImplOutput;
+import org.example.servises.InputService;
+import org.example.servises.OutputService;
 import org.example.windows.InfoWindow;
 import org.example.windows.WinnerWindow;
 
@@ -11,6 +15,8 @@ import java.util.Scanner;
 import static java.util.concurrent.TimeUnit.*;
 
 public class Game {
+    static ImplOutput output = new OutputService();
+    static ImplInput input = new InputService();
     public static void main(String[] args) {
         startGame();
     }
@@ -18,14 +24,13 @@ public class Game {
     public static void startGame(){
         InfoWindow infoWindow = new InfoWindow();
         infoWindow.showInfoWindow();
-
-        System.out.println("Игра началась!");
-        System.out.println("Определяем здоровье существ случайным образом...");
+        output.outputData("Игра началась!");
+        output.outputData("Определяем здоровье существ случайным образом...");
 
         waitLoading();
 
         int health = (int) (Math.random() * (200 - 150) + 150);
-        System.out.println("Здоровье игрока: " + health + "  Здоровье монстра: " + health);
+        output.outputData("Здоровье игрока: " + health + "  Здоровье монстра: " + health);
         Monster monster = new Monster(health);
         Player player = new Player(health);
 
@@ -33,22 +38,21 @@ public class Game {
         do{
             countRaund++;
 
-            System.out.println("Атака игрока");
+            output.outputData("Атака игрока");
             applyAttackPlayer(player);
             int rangeTo = 0, rangeFrom = 0;
             if(determiningSuccessAttack(player, monster)){
                 applyProtectionMonster(monster);
                 boolean check;
                 do {
-                    Scanner in = new Scanner(System.in);
                     check = false;
                     try {
-                        System.out.println("Введите диапзон урона (от и до)");
-                        rangeFrom = in.nextInt();
-                        rangeTo = in.nextInt();
+                        output.outputData("Введите диапзон урона (от и до)");
+                        rangeFrom = input.entryIntData();
+                        rangeTo = input.entryIntData();
                     } catch (InputMismatchException ex) {
                         check = true;
-                        System.out.println("Вы ввели некорректные данные!");
+                        output.outputData("Вы ввели некорректные данные!");
                     }
                 }while(check);
                 monster.setDamage((int) (Math.random() * (rangeTo - rangeFrom) + rangeFrom));
@@ -60,7 +64,7 @@ public class Game {
                 break;
             }
 
-            System.out.println("\nАтака монстра");
+            output.outputData("\nАтака монстра");
             applyAttackMonster(monster);
 
             if(determiningSuccessAttack(monster, player)){
@@ -70,7 +74,7 @@ public class Game {
                 if(applyHealing()){
                     player.setHealth((int) (player.getHealth()*1.3));
                     player.setCountOfHealings();
-                    System.out.println("Кол-во щставшихся исцелений: " + player.getCountOfHealings());
+                    output.outputData("Кол-во щставшихся исцелений: " + player.getCountOfHealings());
                 } else{
                     player.setHealth(player.getHealth() - player.getDamage());
                 }
@@ -80,8 +84,8 @@ public class Game {
                 player.setHealth(0);
             }
 
-            System.out.println("Здоровье игрока: " + player.getHealth() + "  Здоровье монстра: " + monster.getHealth());
-            System.out.println("Раунд " + countRaund + " закончился!\n");
+            output.outputData("Здоровье игрока: " + player.getHealth() + "  Здоровье монстра: " + monster.getHealth());
+            output.outputData("Раунд " + countRaund + " закончился!\n");
 
         } while(monster.getHealth() > 0 && player.getHealth() > 0 && player.getCountOfHealings() <= 4);
 
@@ -98,30 +102,27 @@ public class Game {
 
     public static void applyAttackMonster(Monster monster){
         monster.setAttack((byte) (Math.random() * 30 + 1));
-        System.out.println("Величина аттаки монстра: " + monster.getAttack());
-
+        output.outputData("Величина аттаки монстра: " + monster.getAttack());
     }
 
     public static void applyProtectionMonster(Monster monster){
         monster.setProtection((byte) (Math.random() * 30 + 1));
-        System.out.println("Величина защиты монстра: " + monster.getProtection());
-
+        output.outputData("Величина защиты монстра: " + monster.getProtection());
     }
     public static void applyAttackPlayer(Player player){
         boolean check;
         do{
             check =  false;
-            Scanner in = new Scanner(System.in);
-            System.out.print("Введите величину аттаки (от 1 до 30): ");
+            output.outputData("Введите величину аттаки (от 1 до 30): ");
             try{
-                player.setAttack(in.nextByte());
+                player.setAttack(input.entryByteData());
                 if(player.getAttack() < 1 || player.getAttack() > 30){
                     check = true;
-                    System.out.println("Вы ввели число не из нужного диапазона! Повторите ввод!");
+                    output.outputData("Вы ввели число не из нужного диапазона! Повторите ввод!");
                 }
             } catch (InputMismatchException ex) {
                 check = true;
-                System.out.println("Вы ввели неверный формат! Повторите ввод!");
+                output.outputData("Вы ввели неверный формат! Повторите ввод!");
             }
         } while(check);
     }
@@ -130,37 +131,35 @@ public class Game {
         boolean check;
         do{
             check =  false;
-            Scanner in = new Scanner(System.in);
-            System.out.print("Введите величину защиты (от 1 до 30): ");
+            output.outputData("Введите величину защиты (от 1 до 30): ");
             try{
-                player.setProtection(in.nextByte());
+                player.setProtection(input.entryByteData());
                 if(player.getProtection() < 1 || player.getProtection() > 30){
                     check = true;
-                    System.out.println("Вы ввели число не из нужного диапазона! Повторите ввод!");
+                    output.outputData("Вы ввели число не из нужного диапазона! Повторите ввод!");
                 }
             } catch (InputMismatchException ex) {
                 check = true;
-                System.out.println("Вы ввели неверный формат! Повторите ввод!");
+                output.outputData("Вы ввели неверный формат! Повторите ввод!");
             }
         } while(check);
     }
     public static boolean applyHealing(){
-        System.out.println("Хотите применить исцеление? \n1 - да\n2 - нет");
-        Scanner in = new Scanner(System.in);
-        byte choice = in.nextByte();
+        output.outputData("Хотите применить исцеление? \n1 - да\n2 - нет");
+        byte choice = input.entryByteData();
         if(choice == 1)
             return true;
         return false;
     }
    public static boolean  determiningSuccessAttack(Creature creatureAttack, Creature creatureProtection){
        int modifierAttack = creatureAttack.getAttack() - creatureProtection.getProtection() + 1;
-       System.out.println("Определяем успешность аттаки");
+       output.outputData("Определяем успешность аттаки");
        int countCubes = modifierAttack;
        do{
            int number = (int) (Math.random() * 6 + 1);
-           System.out.println("На кубике выпало число: " + number);
+           output.outputData("На кубике выпало число: " + number);
            if(number == 5 || number == 6){
-               System.out.println("Аттака прошла успешно");
+               output.outputData("Аттака прошла успешно");
                return true;
            }
            countCubes--;
@@ -171,11 +170,11 @@ public class Game {
     public static void waitLoading(){
         try {
             MILLISECONDS.sleep(500);
-            System.out.println("3...");
+            output.outputData("3...");
             MILLISECONDS.sleep(500);
-            System.out.println("2...");
+            output.outputData("2...");
             MILLISECONDS.sleep(500);
-            System.out.println("1...");
+            output.outputData("1...");
             MILLISECONDS.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
