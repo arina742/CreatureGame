@@ -3,12 +3,17 @@ package org.example.creatures;
 public class Creature {
     private byte attack;
     private int health;
-
-    private int protection;
     private int damage;
-
+    private byte protection;
     public Creature(int health) {
         this.health = health;
+    }
+    public byte getProtection() {
+        return protection;
+    }
+
+    public void setProtection(byte protection) {
+        this.protection = protection;
     }
 
     public int getDamage() {
@@ -17,13 +22,6 @@ public class Creature {
 
     public void setDamage(int damage) {
         this.damage = damage;
-    }
-    public int getProtection() {
-        return protection;
-    }
-
-    public void setProtection(int protection) {
-        this.protection = protection;
     }
 
     public byte getAttack() {

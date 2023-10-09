@@ -30,16 +30,15 @@ public class Game {
         Player player = new Player(health);
 
         int countRaund = 0;
-        int rangeFrom = 0, rangeTo = 0;
         do{
-
             countRaund++;
 
             System.out.println("Атака игрока");
-            applyAttcakPlayer(player);
-            boolean check;
+            applyAttackPlayer(player);
+            int rangeTo = 0, rangeFrom = 0;
             if(determiningSuccessAttack(player, monster)){
-                monster.setProtection((int) (monster.getHealth() * 0.3));
+                applyProtectionMonster(monster);
+                boolean check;
                 do {
                     Scanner in = new Scanner(System.in);
                     check = false;
@@ -56,19 +55,29 @@ public class Game {
                 monster.setHealth(monster.getHealth() - monster.getDamage() + monster.getProtection());
             }
 
+            if (monster.getHealth()<=0) {
+                monster.setHealth(0);
+                break;
+            }
+
             System.out.println("\nАтака монстра");
             applyAttackMonster(monster);
 
             if(determiningSuccessAttack(monster, player)){
                 player.setDamage((int) (Math.random() * (rangeTo - rangeFrom) + rangeFrom));
-                if(applyProtection()){
-                    player.setProtection((int) (player.getHealth()*0.3));
+                applyProtectionPlayer(player);
+                player.setHealth(player.getHealth() - player.getDamage() + player.getProtection());
+                if(applyHealing()){
+                    player.setHealth((int) (player.getHealth()*1.3));
                     player.setCountOfHealings();
-                    player.setHealth(player.getHealth() - player.getDamage() + player.getProtection());
-                    System.out.println("Кол-во исцилений: " + player.getCountOfHealings());
+                    System.out.println("Кол-во щставшихся исцелений: " + player.getCountOfHealings());
                 } else{
                     player.setHealth(player.getHealth() - player.getDamage());
                 }
+            }
+
+            if (player.getHealth()<=0) {
+                player.setHealth(0);
             }
 
             System.out.println("Здоровье игрока: " + player.getHealth() + "  Здоровье монстра: " + monster.getHealth());
@@ -92,7 +101,13 @@ public class Game {
         System.out.println("Величина аттаки монстра: " + monster.getAttack());
 
     }
-    public static void applyAttcakPlayer(Player player){
+
+    public static void applyProtectionMonster(Monster monster){
+        monster.setProtection((byte) (Math.random() * 30 + 1));
+        System.out.println("Величина защиты монстра: " + monster.getProtection());
+
+    }
+    public static void applyAttackPlayer(Player player){
         boolean check;
         do{
             check =  false;
@@ -110,16 +125,35 @@ public class Game {
             }
         } while(check);
     }
-    public static boolean applyProtection(){
-        System.out.println("Хотите применить защиту? \n1 - да\n2 - нет");
+
+    public static void applyProtectionPlayer(Player player){
+        boolean check;
+        do{
+            check =  false;
+            Scanner in = new Scanner(System.in);
+            System.out.print("Введите величину защиты (от 1 до 30): ");
+            try{
+                player.setProtection(in.nextByte());
+                if(player.getProtection() < 1 || player.getProtection() > 30){
+                    check = true;
+                    System.out.println("Вы ввели число не из нужного диапазона! Повторите ввод!");
+                }
+            } catch (InputMismatchException ex) {
+                check = true;
+                System.out.println("Вы ввели неверный формат! Повторите ввод!");
+            }
+        } while(check);
+    }
+    public static boolean applyHealing(){
+        System.out.println("Хотите применить исцеление? \n1 - да\n2 - нет");
         Scanner in = new Scanner(System.in);
         byte choice = in.nextByte();
         if(choice == 1)
             return true;
         return false;
     }
-   public static boolean  determiningSuccessAttack(Creature creatureAtack, Creature creatureProtection){
-       int modifierAttack = creatureAtack.getAttack() - creatureProtection.getProtection() + 1;
+   public static boolean  determiningSuccessAttack(Creature creatureAttack, Creature creatureProtection){
+       int modifierAttack = creatureAttack.getAttack() - creatureProtection.getProtection() + 1;
        System.out.println("Определяем успешность аттаки");
        int countCubes = modifierAttack;
        do{

@@ -7,11 +7,12 @@ public class WinnerWindow {
     private static final int height = 210;
 
     private String winner;
-    public WinnerWindow(String winner){
+
+    public WinnerWindow(String winner) {
         this.winner = winner;
     }
 
-    public void showWinnerWindow(){
+    public void showWinnerWindow() {
         JFrame frame = new JFrame();
 
         frame.setSize(width, height);
@@ -26,7 +27,7 @@ public class WinnerWindow {
         label1.setText("Победил " + winner + "!!!");
         panel.add(label1);
 
-        var icon = new ImageIcon( "src/main/resources/prize.png");
+        var icon = new ImageIcon("src/main/resources/prize.png");
 
         panel.add(new JLabel(icon));
         frame.setVisible(true);
