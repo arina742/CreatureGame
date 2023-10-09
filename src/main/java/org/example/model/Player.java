@@ -1,4 +1,4 @@
-package org.example.creatures;
+package org.example.model;
 
 public class Player extends Creature{
     private byte countOfHealings = 4;

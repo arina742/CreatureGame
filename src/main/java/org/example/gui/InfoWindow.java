@@ -1,4 +1,4 @@
-package org.example.windows;
+package org.example.gui;
 
 import javax.swing.*;
 

@@ -1,6 +1,6 @@
-package org.example.creatures;
+package org.example.model;
 
-public class Creature {
+public abstract class Creature {
     protected byte attack;
     protected int health;
     protected int damage;

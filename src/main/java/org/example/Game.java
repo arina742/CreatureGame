@@ -1,22 +1,21 @@
 package org.example;
-import org.example.creatures.Creature;
-import org.example.creatures.Monster;
-import org.example.creatures.Player;
-import org.example.servises.ImplInput;
-import org.example.servises.ImplOutput;
-import org.example.servises.InputService;
-import org.example.servises.OutputService;
-import org.example.windows.InfoWindow;
-import org.example.windows.WinnerWindow;
+import org.example.model.Creature;
+import org.example.model.Monster;
+import org.example.model.Player;
+import org.example.service.ImplInputService;
+import org.example.service.ImplOutputService;
+import org.example.service.impl.InputServiceImpl;
+import org.example.service.impl.OutputServiceImpl;
+import org.example.gui.InfoWindow;
+import org.example.gui.WinnerWindow;
 
 import java.util.InputMismatchException;
-import java.util.Scanner;
 
 import static java.util.concurrent.TimeUnit.*;
 
 public class Game {
-    static ImplOutput output = new OutputService();
-    static ImplInput input = new InputService();
+    static ImplOutputService output = new OutputServiceImpl();
+    static ImplInputService input = new InputServiceImpl();
     public static void main(String[] args) {
         startGame();
     }
@@ -40,7 +39,8 @@ public class Game {
 
             output.outputData("Атака игрока");
             applyAttackPlayer(player);
-            int rangeTo = 0, rangeFrom = 0;
+            int rangeTo = 0;
+            int rangeFrom = 0;
             if(determiningSuccessAttack(player, monster)){
                 applyProtectionMonster(monster);
                 boolean check;
@@ -71,10 +71,10 @@ public class Game {
                 player.setDamage((int) (Math.random() * (rangeTo - rangeFrom) + rangeFrom));
                 applyProtectionPlayer(player);
                 player.setHealth(player.getHealth() - player.getDamage() + player.getProtection());
-                if(applyHealing()){
+                if(needApplyHealing()){
                     player.setHealth((int) (player.getHealth()*1.3));
                     player.setCountOfHealings();
-                    output.outputData("Кол-во щставшихся исцелений: " + player.getCountOfHealings());
+                    output.outputData("Кол-во оставшихся исцелений: " + player.getCountOfHealings());
                 } else{
                     player.setHealth(player.getHealth() - player.getDamage());
                 }
@@ -101,12 +101,12 @@ public class Game {
 
 
     public static void applyAttackMonster(Monster monster){
-        monster.setAttack((byte) (Math.random() * 30 + 1));
+        monster.setAttack((byte) (Math.random() * 29 + 1));
         output.outputData("Величина аттаки монстра: " + monster.getAttack());
     }
 
     public static void applyProtectionMonster(Monster monster){
-        monster.setProtection((byte) (Math.random() * 30 + 1));
+        monster.setProtection((byte) (Math.random() * 29 + 1));
         output.outputData("Величина защиты монстра: " + monster.getProtection());
     }
     public static void applyAttackPlayer(Player player){
@@ -144,7 +144,7 @@ public class Game {
             }
         } while(check);
     }
-    public static boolean applyHealing(){
+    public static boolean needApplyHealing(){
         output.outputData("Хотите применить исцеление? \n1 - да\n2 - нет");
         byte choice = input.entryByteData();
         if(choice == 1)

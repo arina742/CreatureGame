@@ -1,8 +1,10 @@
-package org.example.servises;
+package org.example.service.impl;
+
+import org.example.service.ImplInputService;
 
 import java.util.Scanner;
 
-public class InputService implements ImplInput{
+public class InputServiceImpl implements ImplInputService {
     Scanner in = new Scanner(System.in);
 
     @Override
