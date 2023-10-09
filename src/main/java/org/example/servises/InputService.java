@@ -11,16 +11,6 @@ public class InputService implements ImplInput{
     }
 
     @Override
-    public double entryDoubleData() {
-        return in.nextDouble();
-    }
-
-    @Override
-    public String entryStringData() {
-        return in.nextLine();
-    }
-
-    @Override
     public byte entryByteData() {
         return in.nextByte();
     }
