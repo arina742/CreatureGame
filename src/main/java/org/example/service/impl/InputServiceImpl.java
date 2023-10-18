@@ -2,18 +2,39 @@ package org.example.service.impl;
 
 import org.example.service.ImplInputService;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class InputServiceImpl implements ImplInputService {
-    Scanner in = new Scanner(System.in);
+
 
     @Override
     public int entryIntData() {
-        return in.nextInt();
+        Scanner in = new Scanner(System.in);
+        int number;
+           try {
+               number = in.nextInt();
+           } catch (NumberFormatException e) {
+               OutputServiceImpl out = new OutputServiceImpl();
+               out.outputData("Вы неккоректно ввели число");
+               out.outputData("Попробуйте еще раз");
+               return entryIntData();
+           }
+        return number;
     }
 
     @Override
     public byte entryByteData() {
-        return in.nextByte();
+        Scanner in = new Scanner(System.in);
+        byte number;
+            try {
+                number = in.nextByte();
+            } catch (NumberFormatException | InputMismatchException e) {
+                OutputServiceImpl out = new OutputServiceImpl();
+                out.outputData("Вы неккоректно ввели число");
+                out.outputData("Попробуйте еще раз");
+                return entryByteData();
+            }
+        return number;
     }
 }

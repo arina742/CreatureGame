@@ -46,14 +46,13 @@ public class Game {
                 boolean check;
                 do {
                     check = false;
-                    try {
                         output.outputData("Введите диапзон урона (от и до)");
                         rangeFrom = input.entryIntData();
                         rangeTo = input.entryIntData();
-                    } catch (InputMismatchException ex) {
-                        check = true;
-                        output.outputData("Вы ввели некорректные данные!");
-                    }
+                        if(rangeTo < rangeFrom) {
+                            check = true;
+                            output.outputData("Вы ввели некорректные данные!");
+                        }
                 }while(check);
                 monster.setDamage((int) (Math.random() * (rangeTo - rangeFrom) + rangeFrom));
                 monster.setHealth(monster.getHealth() - monster.getDamage() + monster.getProtection());
@@ -110,39 +109,29 @@ public class Game {
         output.outputData("Величина защиты монстра: " + monster.getProtection());
     }
     public static void applyAttackPlayer(Player player){
-        boolean check;
+       boolean check;
         do{
-            check =  false;
-            output.outputData("Введите величину аттаки (от 1 до 30): ");
-            try{
+            check = false;
+                output.outputData("Введите величину аттаки (от 1 до 30): ");
                 player.setAttack(input.entryByteData());
                 if(player.getAttack() < 1 || player.getAttack() > 30){
                     check = true;
                     output.outputData("Вы ввели число не из нужного диапазона! Повторите ввод!");
                 }
-            } catch (InputMismatchException ex) {
-                check = true;
-                output.outputData("Вы ввели неверный формат! Повторите ввод!");
-            }
         } while(check);
     }
 
     public static void applyProtectionPlayer(Player player){
         boolean check;
-        do{
-            check =  false;
-            output.outputData("Введите величину защиты (от 1 до 30): ");
-            try{
+            do {
+                output.outputData("Введите величину защиты (от 1 до 30): ");
+                check = false;
                 player.setProtection(input.entryByteData());
-                if(player.getProtection() < 1 || player.getProtection() > 30){
+                if (player.getProtection() < 1 || player.getProtection() > 30) {
                     check = true;
                     output.outputData("Вы ввели число не из нужного диапазона! Повторите ввод!");
                 }
-            } catch (InputMismatchException ex) {
-                check = true;
-                output.outputData("Вы ввели неверный формат! Повторите ввод!");
-            }
-        } while(check);
+            }while(check);
     }
     public static boolean needApplyHealing(){
         output.outputData("Хотите применить исцеление? \n1 - да\n2 - нет");
